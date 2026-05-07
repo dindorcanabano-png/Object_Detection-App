@@ -7,7 +7,8 @@ from streamlit_webrtc import webrtc_streamer, WebRtcMode
 # ---------------- MODEL ----------------
 @st.cache_resource
 def load_model():
-    return YOLO("yolov8n.pt")
+    from ultralytics import YOLO
+    return YOLO("yolov8n.pt", task="detect")
 
 model = load_model()
 
