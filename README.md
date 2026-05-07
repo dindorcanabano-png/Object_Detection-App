@@ -11,4 +11,5 @@ Real-time object detection using YOLOv8 + Streamlit WebRTC.
 ## Deploy
 1. Fork this repo
 2. Click "Deploy" on Streamlit Cloud
-3. Done! 🚀
+3. Done!
+4. 
