@@ -4,9 +4,6 @@ ultralytics==8.0.196
 numpy==1.26.4
 opencv-python-headless==4.9.0.80
 
-torch==2.2.2
-torchvision==0.17.2
-
 av==11.0.0
 streamlit-webrtc==0.47.7
 
