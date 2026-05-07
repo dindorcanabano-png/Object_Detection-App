@@ -6,3 +6,4 @@ Pillow
 av
 streamlit-webrtc==0.47.7
 tornado==6.4.1
+numpy<2
