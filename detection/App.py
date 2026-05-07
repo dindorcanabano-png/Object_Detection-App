@@ -1,48 +1,25 @@
 import streamlit as st
+from ultralytics import YOLO
 import av
 import cv2
-from ultralytics import YOLO
-from streamlit_webrtc import webrtc_streamer, WebRtcMode
+from streamlit_webrtc import webrtc_streamer
 
-# ---------------- MODEL ----------------
 @st.cache_resource
 def load_model():
-    from ultralytics import YOLO
-    model = YOLO("https://github.com/ultralytics/assets/releases/download/v8.1.0/yolov8n.pt")
-    return model
+    return YOLO("yolov8n.pt")
+
 model = load_model()
 
-# ---------------- TITLE ----------------
-st.title("🎥 Live Object Detection & Tracing")
+st.title("Live Detection")
 
-# ---------------- FACE MODEL ----------------
-face_net = cv2.CascadeClassifier(
-    cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
-)
-
-# ---------------- CALLBACK ----------------
-def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
+def callback(frame):
     img = frame.to_ndarray(format="bgr24")
-
-    results = model.track(img, persist=True, conf=0.5, verbose=False)
+    results = model(img, verbose=False)
     annotated = results[0].plot()
-
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    faces = face_net.detectMultiScale(gray, 1.1, 5)
-
-    for (x, y, w, h) in faces:
-        cv2.rectangle(annotated, (x, y), (x+w, y+h), (0, 255, 0), 2)
-
     return av.VideoFrame.from_ndarray(annotated, format="bgr24")
 
-# ---------------- STREAM ----------------
 webrtc_streamer(
-    key="object-detection",
-    mode=WebRtcMode.SENDRECV,
-    video_frame_callback=video_frame_callback,
-    async_processing=True,
+    key="test",
+    video_frame_callback=callback,
     media_stream_constraints={"video": True, "audio": False},
-    rtc_configuration={
-        "iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]
-    },
 )
