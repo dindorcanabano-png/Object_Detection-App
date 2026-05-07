@@ -1,10 +1,8 @@
 streamlit
-streamlit-webrtc
-opencv-python-headless
-ultralytics
-torch>=2.0.0
-torchvision>=0.15.0
-torchaudio>=2.0.0
-av
+opencv-python-headless==4.9.0.80
 numpy
-pillow
+Pillow
+ultralytics
+av
+streamlit-webrtc==0.47.7
+tornado==6.4.1
