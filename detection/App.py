@@ -1,14 +1,6 @@
 import streamlit as st
 import av
-from ultralytics import YOLO
-from streamlit_webrtc import webrtc_streamer, WebRtcMode
 import cv2
-
-try:
-    import cv2
-except Exception:
-    st.error("OpenCV failed to load. Install libgl1 or use opencv-python-headless.")
-    st.stop()
 
 # ---------------- UI CONFIG ----------------
 st.set_page_config(
@@ -20,14 +12,15 @@ st.set_page_config(
 st.title("🎥 Live Object Detection & Tracing")
 st.write("YOLO + Face Detection")
 
-# ---------------- LOAD YOLO MODEL ----------------
+# ---------------- SAFE IMPORT YOLO ----------------
 @st.cache_resource
 def load_model():
+    from ultralytics import YOLO
     return YOLO("yolov8n.pt")
 
 model = load_model()
 
-# ---------------- FACE DETECTION MODEL ----------------
+# ---------------- FACE MODEL ----------------
 @st.cache_resource
 def load_face_model():
     return cv2.CascadeClassifier(
@@ -61,20 +54,3 @@ def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
         )
 
     return av.VideoFrame.from_ndarray(annotated, format="bgr24")
-
-# ---------------- WEBCAM STREAM ----------------
-webrtc_streamer(
-    key="ai-stream",
-    mode=WebRtcMode.SENDRECV,
-    video_frame_callback=video_frame_callback,
-    async_processing=True,
-    media_stream_constraints={
-        "video": True,
-        "audio": False
-    },
-    rtc_configuration={
-        "iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]
-    }
-)
-
-st.caption("Runs locally only. No video is uploaded.")
