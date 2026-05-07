@@ -1,9 +1,14 @@
 import streamlit as st
-import cv2
 import av
-
 from ultralytics import YOLO
 from streamlit_webrtc import webrtc_streamer, WebRtcMode
+import cv2
+
+try:
+    import cv2
+except Exception:
+    st.error("OpenCV failed to load. Install libgl1 or use opencv-python-headless.")
+    st.stop()
 
 # ---------------- UI CONFIG ----------------
 st.set_page_config(
